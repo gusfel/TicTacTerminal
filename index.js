@@ -53,16 +53,7 @@ const checkDiag = board => {
   return false;
 };
 
-const move = (player) => {
-  console.log('It\s your turn player ' + player);
-  prompt.get(['position'], function (err, result) {
-    //
-    // Log the results.
-    //
-    const move = result.position;
-    console.log(move);
-  });
-};
+
 
 // move('player 1');
 const createBoard = board => {
@@ -73,7 +64,7 @@ const createBoard = board => {
         return ' ';
       }
       return val;
-    })
+    });
     newBoard.push(row.join('|'));
     if (i < 2) {
       newBoard.push(['-----']);
@@ -82,10 +73,73 @@ const createBoard = board => {
   return newBoard.join('\n');
 };
 
-const game = () => {
-  let gameBoard = newBoard;
-  let displayBoard = createBoard(gameBoard);
-  console.log(displayBoard);
+const takeMove = num => {
+  const newNum = num - 1;
+  const row = Math.floor(newNum / 3);
+  const coordinates = [row, newNum % 3];
+  return coordinates;
 };
 
-game()
+const move = (player) => {
+  console.log('It\s your turn player ' + player);
+  prompt.get(['position'], function (err, result) {
+    const move = result.position;
+    return move;
+  });
+};
+
+const game = (num = 0) => {
+  let gameBoard = newBoard;
+  let displayBoard = createBoard(gameBoard);
+  let counter = num;
+  let player, marker;
+  let gameOver = false;
+  if (counter === 0) {
+    player = 'player 1';
+    marker = 'X';
+  } else {
+    player = 'player 2';
+    marker = 'O';
+  }
+
+  if (counter === 0) {
+    console.log('It\s your turn player ' + player);
+    prompt.get(['position'], (err, result) => {
+      const move = result.position;
+      // return move;
+      const coordinates = takeMove(move);
+      gameBoard[coordinates[0]][coordinates[1]] = marker;
+      counter = Math.abs(counter - 1);
+      console.log(counter);
+      console.log(createBoard(gameBoard));
+      gameOver = checkForWin(gameBoard);
+      if (!gameOver) {
+        game(counter);
+      }
+      if (gameOver) {
+        console.log('over');
+      }
+    });
+  }
+  if (counter === 1) {
+    console.log('It\s your turn player ' + player);
+    prompt.get(['position'], (err, result) => {
+      const move = result.position;
+      // return move;
+      const coordinates = takeMove(move);
+      gameBoard[coordinates[0]][coordinates[1]] = marker;
+      counter = Math.abs(counter - 1);
+      console.log(createBoard(gameBoard));
+      if (!gameOver) {
+        game(counter);
+      }
+      if (gameOver) {
+        console.log('over');
+      }
+    });
+
+  }
+
+};
+
+game();
