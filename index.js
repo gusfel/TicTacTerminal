@@ -13,6 +13,12 @@ const newBoard = [
   [null, null, null]
 ];
 
+const emptyBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null]
+];
+
 const checkForWin = board => {
   return checkDiag(board) || checkHoriz(board) || checkVert(board);
 };
@@ -88,8 +94,15 @@ const move = (player) => {
   });
 };
 
-const game = (num = 0) => {
+const clearBoard = () => {
+  return emptyBoard;
+};
+
+const game = (num = 0, board) => {
   let gameBoard = newBoard;
+  // if (num === 0) {
+  //   gameBoard = clearBoard();
+  // }
   let displayBoard = createBoard(gameBoard);
   let counter = num;
   let player, marker;
@@ -102,49 +115,45 @@ const game = (num = 0) => {
     marker = 'O';
   }
 
-  // if (counter === 0) {
+  console.log(displayBoard);
   console.log('It\s your turn player ' + player);
   prompt.get(['position'], (err, result) => {
     const move = result.position;
-    // return move;
-    const coordinates = takeMove(move);
-    gameBoard[coordinates[0]][coordinates[1]] = marker;
-    counter++;
-    console.log(counter);
-    console.log(createBoard(gameBoard));
-    gameOver = checkForWin(gameBoard);
-    if (!gameOver) {
-      if (counter === 9) {
-        console.log('tie!');
+    if (move > 0 && move <= 9) {
+      const coordinates = takeMove(move);
+      if (!gameBoard[coordinates[0]][coordinates[1]]) {
+        gameBoard[coordinates[0]][coordinates[1]] = marker;
+        counter++;
+        gameOver = checkForWin(gameBoard);
+        if (!gameOver) {
+          if (counter === 9) {
+            console.log('tie!');
+          } else {
+            game(counter);
+          }
+        }
+        if (gameOver) {
+          console.log(createBoard(gameBoard));
+          console.log(player + ' wins!');
+          console.log('play again? Y/N');
+          prompt.get(['answer'], (errG, resultG) => {
+            const response = resultG.answer;
+            if (response === 'Y') {
+              game();
+            } else {
+              console.log('goodbye');
+            }
+          })
+        }
       } else {
+        console.log('that position has already been picked, please pick another');
         game(counter);
       }
-    }
-    if (gameOver) {
-      console.log(player + ' wins!');
+    } else {
+      console.log('please pick a number from 1-9');
+      game(counter);
     }
   });
-  // }
-  // if (counter === 1) {
-  //   console.log('It\s your turn player ' + player);
-  //   prompt.get(['position'], (err, result) => {
-  //     const move = result.position;
-  //     // return move;
-  //     const coordinates = takeMove(move);
-  //     gameBoard[coordinates[0]][coordinates[1]] = marker;
-  //     counter = ++;
-  //     console.log(createBoard(gameBoard));
-  //     gameOver = checkForWin(gameBoard);
-  //     if (!gameOver) {
-  //       game(counter);
-  //     }
-  //     if (gameOver) {
-  //       console.log(player + ' wins!');
-  //     }
-  //   });
-
-  // }
-
 };
 
 game();
