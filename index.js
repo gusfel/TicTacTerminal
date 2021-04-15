@@ -143,7 +143,7 @@ const game = (num = 0, board) => {
             } else {
               console.log('goodbye');
             }
-          })
+          });
         }
       } else {
         console.log('that position has already been picked, please pick another');
