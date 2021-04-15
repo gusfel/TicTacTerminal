@@ -117,7 +117,7 @@ const game = (num = 0) => {
         game(counter);
       }
       if (gameOver) {
-        console.log('over');
+        console.log(player + ' wins!');
       }
     });
   }
@@ -130,11 +130,12 @@ const game = (num = 0) => {
       gameBoard[coordinates[0]][coordinates[1]] = marker;
       counter = Math.abs(counter - 1);
       console.log(createBoard(gameBoard));
+      gameOver = checkForWin(gameBoard);
       if (!gameOver) {
         game(counter);
       }
       if (gameOver) {
-        console.log('over');
+        console.log(player + ' wins!');
       }
     });
 
